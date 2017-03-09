@@ -12,6 +12,6 @@
 
 * If this brings value, I will do more than one idea
 
-* [React Native](https://facebook.github.io/react-native/), [React](https://facebook.github.io/react/), [Feathersjs](http://feathersjs.com/), and [Flask](http://flask.pocoo.org/)
+* Technologies that will be used: [React Native](https://facebook.github.io/react-native/), [React](https://facebook.github.io/react/), [Feathersjs](http://feathersjs.com/), and [Flask](http://flask.pocoo.org/)
 
 * [Subscribe](https://www.youtube.com/user/99baddawg), watch, or star to stay up to date
