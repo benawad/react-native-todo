@@ -8,6 +8,7 @@ import { AsyncStorage } from 'react-native';
 async function saveToken(token) {
   try {
     await AsyncStorage.setItem('@rntodo:token', token);
+    console.log('token saved');
   } catch (error) {
     console.log('Error setting item for AsyncStorage');
     console.log(error);
@@ -17,12 +18,12 @@ async function saveToken(token) {
 const saveTokenEpic = action$ =>
   action$.ofType('LOGIN_SUCCEEDED')
     .mergeMap(action =>
-      fromPromise(saveToken(action.response.token))
+      fromPromise(saveToken(action.data.data.login.token))
         .map(x => ({
           type: 'SET_ITEM_SUCCEEDED',
         }))
     );
 
 export default combineEpics(
-  saveTokenEpic
+  saveTokenEpic,
 );
