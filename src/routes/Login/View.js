@@ -82,7 +82,8 @@ const loginGraphql = graphql(loginMutation, {
         },
       })
       .then(data => {
-        ownProps.loginSucceeded(data);
+        ownProps.loginSucceeded(data.data.login.token);
+        ownProps.addTokenToProps(data.data.login.token);
       })
       .catch(err => {
         ownProps.loginFailed(err);
