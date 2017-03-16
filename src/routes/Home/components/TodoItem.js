@@ -12,7 +12,7 @@ import {
   Grid,
   Col,
 } from 'react-native-elements'
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
 class TodoItem extends React.Component {
@@ -25,11 +25,23 @@ class TodoItem extends React.Component {
   };
 
   render() {
+
+    let textStyle = {};
+
+    if (this.props.complete) {
+      textStyle.textDecorationLine = 'line-through';
+    }
+
     return (
       <Card>
         <Grid>
-          <Col size={75}>
-            <Text>{this.props.text}</Text>
+          <Col 
+            onPress={() => this.props.updateTodo(this.props.id, this.props.text, !this.props.complete, this.props.token)} 
+            size={75}>
+            <Text
+              style={textStyle}>
+                {this.props.text}
+            </Text>
           </Col>
           <Col size={25}>
             <Icon
@@ -65,4 +77,33 @@ const deleteTodo = graphql(deleteTodoMutation, {
   }),
 });
 
-export default deleteTodo(TodoItem);
+const updateTodoMutation  = gql`
+mutation($id: String!, $text: String!, $complete: Boolean!, $token: String!) {
+  updateTodo(id: $id, text: $text, complete: $complete, token: $token) {
+    id
+    text
+    complete
+  }
+}
+`;
+
+
+const updateTodo = graphql(updateTodoMutation, {
+  props: ({ ownProps, mutate }) => ({
+    updateTodo(id, text, complete, token) {
+      return mutate({
+        variables: {
+          id,
+          text,
+          complete,
+          token,
+        }
+      });
+    },
+  }),
+});
+
+export default compose(
+  deleteTodo,
+  updateTodo
+)(TodoItem);

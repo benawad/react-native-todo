@@ -105,6 +105,8 @@ const getViewer = graphql(viewerQuery, {
               props.ownProps.addTodo(todo);
             } else if (op === 'deleted') {
               props.ownProps.deleteTodo(todo.id);
+            } else if (op === 'updated') {
+              props.ownProps.updateTodo(todo);
             }
             return prev;
           }
