@@ -1,19 +1,42 @@
 import React from 'react';
-import TodoForm from './components/TodoForm';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { View } from 'react-native';
-import { Button} from 'react-native-elements';
+import { 
+  View,
+  ScrollView,
+  Text,
+} from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { List, ListItem } from 'react-native-elements'
+import { 
+  Button,
+  Card,
+  List, 
+  ListItem, 
+  Icon,
+  Grid,
+  Col,
+} from 'react-native-elements'
+
+import TodoForm from './components/TodoForm';
+import TodoItem from './components/TodoItem';
 
 class Home extends React.Component {
+
+  setTodosCalled = false;
 
   componentDidMount() {
     this.props.subscribeToNewTodos();
   }
 
+  componentWillReceiveProps(nextProps){
+    if (!this.setTodosCalled && !nextProps.viewer.loading && this.props.viewer.loading) {
+      this.setTodosCalled = true;
+      this.props.setTodos(nextProps.viewer.viewer.todos);
+    }
+  }
+
   render() {
+    console.log(this.props.todos);
     return (
       <View>
         <TodoForm {...this.props}/>
@@ -21,16 +44,18 @@ class Home extends React.Component {
           title='Go to login'
           onPress={() => Actions.login({})}
         />
-        <List>
-          {
-            this.props.todos.map((l, i) => (
-              <ListItem
+        <ScrollView>
+          { 
+            this.props.todos.map((t, i) => (
+              <TodoItem 
+                token={this.props.token}
                 key={i}
-                title={l.text}
-              />
+                id={t.id}
+                text={t.text} 
+                complete={t.complete} />
             ))
           }
-        </List>
+        </ScrollView>
       </View>
     );
   }
@@ -40,7 +65,9 @@ const viewerQuery = gql`
 query($token: String!) {
   viewer(token: $token) {
     todos {
+      id
     	text
+      complete
     }
   }
 }
@@ -48,9 +75,13 @@ query($token: String!) {
 
 const subscriptionGraphql = gql`
 subscription {
-  todoAdded {
-    text
-    complete
+  todoChanges {
+    op
+    todo {
+      id
+      text
+      complete
+    }
   }
 }
 `;
@@ -69,7 +100,12 @@ const getViewer = graphql(viewerQuery, {
         return props.viewer.subscribeToMore({
           document: subscriptionGraphql,
           updateQuery: (prev, { subscriptionData }) => {
-            props.ownProps.addTodo(subscriptionData.data.todoAdded);
+            const { op, todo } = subscriptionData.data.todoChanges;
+            if (op === 'created') {
+              props.ownProps.addTodo(todo);
+            } else if (op === 'deleted') {
+              props.ownProps.deleteTodo(todo.id);
+            }
             return prev;
           }
         });

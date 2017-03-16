@@ -4,6 +4,8 @@ export default (state=[], action) => {
       return action.todos;
     case 'ADD_TODO':
       return [...state, action.todo];
+    case 'DELETE_TODO':
+      return state.filter(todo => todo.id !== action.id);
     default:
       return state;
   }
