@@ -9,36 +9,27 @@ import { ApolloProvider } from 'react-apollo';
 import 'rxjs';
 import { Button } from 'react-native-elements'
 import gql from 'graphql-tag';
+import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
+import ApolloClient, { createNetworkInterface } from 'apollo-client';
 
 import store from './store';
 import Router from './routes';
-import { client } from './reducers/index';
+import { getToken } from './helpers';
+
+const wsClient = new SubscriptionClient('ws://localhost:5000/subscriptions', { reconnect: true, });
+
+const networkInterface = createNetworkInterface({ uri: 'http://localhost:3030/graphql' });
+
+const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
+  networkInterface,
+  wsClient,
+);
+
+export const client = new ApolloClient({
+  networkInterface: networkInterfaceWithSubscriptions,
+});
 
 export default class AppContainer extends React.Component {
-
-  constructor(props) {
-    super(props);
-    //this.props.getTokenFromStorage();
-    //client.subscribeToMore({
-      //document: gql`
-        //subscription {
-          //viewer(token: "") {
-            //todos {
-              //text,
-              //complete
-            //}
-          //}
-        //}
-      //`,
-      //variables: {
-        
-      //},
-      //updateQuery: (prev, {subscriptionData}) => {
-          //return; // Modify your store and return new state with the new arrived data
-      //}
-  //});
-  }
-
   render() {
     return (
       <ApolloProvider client={client} store={store}>

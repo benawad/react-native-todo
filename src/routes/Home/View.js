@@ -1,9 +1,13 @@
 import React from 'react';
 import TodoForm from './components/TodoForm';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 
-export default class Home extends React.Component {
-  componentWillMount() {
-    this.props.checkIfSignedIn();
+class Home extends React.Component {
+
+  componentWillReceiveProps() {
+    console.log('----');
+    console.log(this.props);
   }
 
   render() {
@@ -12,3 +16,21 @@ export default class Home extends React.Component {
     );
   }
 }
+
+const viewerQuery = gql`
+query {
+  viewer {
+    todos {
+    	text
+    }
+  }
+}
+`;
+
+const getViewer = graphql(viewerQuery, {
+  props: ({ data }) => ({
+    viewer: data,
+  }),
+});
+
+export default getViewer(Home);

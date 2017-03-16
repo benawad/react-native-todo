@@ -5,30 +5,11 @@ import { startSubmit, stopSubmit } from 'redux-form';
 import { Actions } from 'react-native-router-flux';
 import { AsyncStorage } from 'react-native';
 
-async function saveToken(token) {
-  try {
-    await AsyncStorage.setItem('@rntodo:token', token);
-    console.log('token saved');
-  } catch (error) {
-    console.log('Error setting item for AsyncStorage');
-    console.log(error);
-  }
-}
-
-async function getToken() {
- try {
-    const value = await AsyncStorage.getItem('@rntodo:token');
-    if (value !== null){
-      return value;
-    }
-  } catch (error) {
-    console.log(error);
-    return '';
-  } 
-}
+import { saveToken, getToken } from '../helpers';
 
 const saveTokenEpic = action$ =>
   action$.ofType('LOGIN_SUCCEEDED')
+    .do(() => Actions.home({}))
     .mergeMap(action =>
       fromPromise(saveToken(action.token))
         .map(x => ({
@@ -42,9 +23,10 @@ const checkIfSignedIn = action$ =>
       fromPromise(getToken())
         .map(token => {
           if (token === '') {
-            Actions.login;
+            Actions.login({});
             return { type: 'NOT_SIGNED_IN' };
           } else {
+            Actions.home({});
             return { 
               type: 'ADD_TOKEN_TO_PROPS',
               token
