@@ -13,19 +13,17 @@ import { Actions } from 'react-native-router-flux';
 
 class Menu extends React.Component {
 
-  constructor(props) {
-    super(props);
-    console.log('Constructed');
-  }
-
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#ededed', paddingTop: 50}}>
         <List containerStyle={{marginBottom: 20}}>
           <ListItem
             key={-3}
-            title='Login'
-            onPress={() => Actions.login({})}
+            title='Logout'
+            onPress={() => {
+              Actions.login({});
+              this.props.logout();
+            }}
           />
         </List>
       </View>

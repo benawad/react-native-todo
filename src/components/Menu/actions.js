@@ -1,1 +1,1 @@
-export const dummy = () => ({});
+export const logout = () => ({ type: 'LOGOUT' });

@@ -11,7 +11,6 @@ import Signup from './Signup';
 import Login from './Login';
 import Home from './Home';
 import Loading from './Loading';
-import NavigationDrawer from '../components/NavigationDrawer';
 import Menu from '../components/Menu';
 
 export default class App extends Component {
