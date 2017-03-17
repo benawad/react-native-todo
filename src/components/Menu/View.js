@@ -15,8 +15,12 @@ class Menu extends React.Component {
 
   render() {
     return (
-      <View style={{flex: 1, backgroundColor: '#ededed', paddingTop: 50}}>
+      <View style={{flex: 1, backgroundColor: '#ededed'}}>
         <List containerStyle={{marginBottom: 20}}>
+          <ListItem
+            key={-2}
+            title={<Text>{this.props.user.email || ''}</Text>}
+          />
           <ListItem
             key={-3}
             title='Logout'

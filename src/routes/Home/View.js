@@ -34,6 +34,9 @@ class Home extends React.Component {
     if (!this.setTodosCalled && !nextProps.viewer.loading && this.props.viewer.loading) {
       this.setTodosCalled = true;
       this.props.setTodos(nextProps.viewer.viewer.todos);
+      this.props.setUser({
+        email: nextProps.viewer.viewer.email
+      });
     }
   }
 
@@ -65,6 +68,7 @@ class Home extends React.Component {
 const viewerQuery = gql`
 query($token: String!) {
   viewer(token: $token) {
+    email
     todos {
       id
     	text

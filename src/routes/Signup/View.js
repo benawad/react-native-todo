@@ -14,7 +14,7 @@ import gql from 'graphql-tag';
 
 const textField = ({ input: { onChange, ...otherProps }, meta: { touched, error } }) => (
   <View>
-    <FormInput onChangeText={onChange} {...otherProps} />
+    <FormInput autoCapitalize='none' onChangeText={onChange} {...otherProps} />
     { touched && error &&  <FormValidationMessage>{ error }</FormValidationMessage> }
   </View>
 );
