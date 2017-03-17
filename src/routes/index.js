@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Router, Scene } from 'react-native-router-flux';
 import {
-  Text
+  Text,
 } from 'react-native';
 import {
   SideMenu
@@ -12,13 +12,25 @@ import Login from './Login';
 import Home from './Home';
 import Loading from './Loading';
 import Menu from '../components/Menu';
+import NavBar from '../components/NavBar';
 
 export default class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false,
+    };
+  }
+
   render() {
     return (
       <SideMenu
        menu={<Menu/>}
-       isOpen={false} >
+       isOpen={this.state.isOpen} >
+      <NavBar menuButtonClicked={() => {
+        this.setState({ isOpen: !this.state.isOpen });
+      }} />
         <Router>
           <Scene key="root">
             <Scene key="loading" component={Loading} title="Loading" initial hideNavBar />
