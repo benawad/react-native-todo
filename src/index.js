@@ -33,7 +33,7 @@ export default class AppContainer extends React.Component {
   render() {
     return (
       <ApolloProvider client={client} store={store}>
-       <View style={{flex: 1}}>
+        <View style={{flex: 1}}>
           <StatusBar />
           <Router />
         </View>

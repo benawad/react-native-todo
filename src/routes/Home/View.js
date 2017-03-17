@@ -10,15 +10,17 @@ import { Actions } from 'react-native-router-flux';
 import { 
   Button,
   Card,
-  List, 
-  ListItem, 
   Icon,
   Grid,
   Col,
+  SideMenu,
+  List,
+  ListItem,
 } from 'react-native-elements'
 
 import TodoForm from './components/TodoForm';
 import TodoItem from './components/TodoItem';
+import Menu from '../../components/Menu';
 
 class Home extends React.Component {
 
@@ -36,7 +38,6 @@ class Home extends React.Component {
   }
 
   render() {
-    console.log(this.props.todos);
     return (
       <View>
         <TodoForm {...this.props}/>

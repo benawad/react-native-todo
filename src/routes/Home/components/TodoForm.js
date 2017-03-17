@@ -7,14 +7,21 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import { FormLabel, FormInput, Button, FormValidationMessage } from 'react-native-elements'
+import { 
+  FormLabel,
+  FormInput,
+  Button,
+  FormValidationMessage,
+} from 'react-native-elements'
 import { Field, reduxForm, SubmissionError } from 'redux-form';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 const textField = ({ input: { onChange, ...otherProps }, meta: { touched, error } }) => (
   <View>
-    <FormInput onChangeText={onChange} {...otherProps} />
+    <FormInput 
+      onChangeText={onChange} 
+      {...otherProps} />
     { touched && error &&  <FormValidationMessage>{ error }</FormValidationMessage> }
   </View>
 );
