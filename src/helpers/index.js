@@ -15,6 +15,8 @@ export async function getToken() {
     const value = await AsyncStorage.getItem('@rntodo:token');
     if (value !== null){
       return value;
+    } else {
+      return '';
     }
   } catch (error) {
     console.log(error);
