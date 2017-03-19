@@ -28,6 +28,7 @@ const logoutEpic = action$ =>
 
 const checkIfSignedIn = action$ =>
   action$.ofType('CHECK_IF_SIGNED_IN')
+    //.do(action => saveToken(''))
     .mergeMap(action =>
       fromPromise(getToken())
         .map(token => {
@@ -44,8 +45,26 @@ const checkIfSignedIn = action$ =>
         })
     );
 
+const addListIdEpic = (action$, { getState, dispatch }) =>
+  action$
+    .ofType('ADD_TODO_NEED_LIST_ID', 'DELETE_TODO_NEED_LIST_ID', 'UPDATE_TODO_NEED_LIST_ID')
+    .map(action => {
+      const state = getState();
+      const { currentList } = state;
+      const listId = state.todoLists[currentList].id;
+      const type = action.type.replace(/\_NEED\_LIST\_ID/g, '');
+      return {
+        ...action, 
+        type,
+        listId,
+      }
+    })
+    
+
+
 export default combineEpics(
   saveTokenEpic,
   checkIfSignedIn,
   logoutEpic,
+  addListIdEpic
 );

@@ -26,60 +26,61 @@ const textField = ({ input: { onChange, ...otherProps }, meta: { touched, error 
   </View>
 );
 
-const submit = ({ text='' }, createTodo, listId) => {
+const submit = ({ name='' }, createTodoList) => {
   const errors = {
-    _error: 'Empty todo!'
+    _error: 'Empty todo list!'
   }
 
   let error = false;
 
-  if (!text.trim()) {
-    errors.text = 'Required'
+  if (!name.trim()) {
+    errors.name = 'Required'
     error = true;
   }
 
   if (error) {
     throw new SubmissionError(errors);
   } else {
-    createTodo(text, false, listId);
+    createTodoList(name);
   }
 }
 
-const TodoForm = ({ handleSubmit, createTodo, listId }) => {
+const TodoListForm = ({ handleSubmit, createTodoList }) => {
   return (
     <View>
-      <FormLabel>Todo</FormLabel>
-      <Field name='text' component={textField} />
+      <FormLabel>Add TodoList</FormLabel>
+      <Field name='name' component={textField} />
       <Button 
         title='Create'
-        onPress={handleSubmit(values => submit(values, createTodo, listId))} />
+        onPress={handleSubmit(values => submit(values, createTodoList))} />
     </View>
   );
 }
 
-const createTodoMutation = gql`
-mutation($listId: String!, $text: String!, $complete: Boolean!, $token: String!) {
-  createTodo(listId: $listId, text: $text, complete: $complete, token: $token) {
-    id
+const createTodoListMutation = gql`
+mutation($name: String!, $token: String!) {
+  createTodoList(name: $name, token: $token) {
+    name
   }
 }
 `;
 
-const todoGraphql = graphql(createTodoMutation, {
+const todoListGraphql = graphql(createTodoListMutation, {
   props: ({ ownProps, mutate }) => ({
-    createTodo(text, complete, listId) {
+    createTodoList(name) {
       return mutate({
         variables: {
           token: ownProps.token,
-          text,
-          complete,
-          listId,
+          name,
         }
+      })
+      .then(({ data }) => {
+        console.log(data);
       });
     },
   }),
 });
 
 export default reduxForm({
-  form: 'todoForm',
-})(todoGraphql(TodoForm));
+  form: 'todoListForm',
+})(todoListGraphql(TodoListForm));

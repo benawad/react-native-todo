@@ -5,6 +5,8 @@ import login from './login';
 import token from './token';
 import todos from './todos';
 import user from './user';
+import todoLists from './todoLists';
+import currentList from './currentList';
 
 export const rootReducer = combineReducers({
   form: formReducer,
@@ -12,4 +14,6 @@ export const rootReducer = combineReducers({
   token,
   todos,
   user,
+  todoLists,
+  currentList,
 });

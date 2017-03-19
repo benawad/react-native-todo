@@ -10,6 +10,7 @@ import {
   ListItem
 } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
+import TodoListForm from './components/TodoListForm';
 
 class Menu extends React.Component {
 
@@ -21,6 +22,15 @@ class Menu extends React.Component {
             key={-2}
             title={<Text>{this.props.user.email || ''}</Text>}
           />
+          {
+            this.props.todoLists.map((tl, i) => (
+              <ListItem
+                key={i}
+                title={tl.name}
+                onPress={() => this.props.changeList(i)}
+              />
+            ))
+          }
           <ListItem
             key={-3}
             title='Logout'
@@ -29,16 +39,19 @@ class Menu extends React.Component {
               this.props.logout();
             }}
           />
+          <ListItem
+            key={-4}
+            title='Sign up'
+            onPress={() => {
+              Actions.signup({});
+            }}
+          />
         </List>
+        <TodoListForm />
       </View>
     );
   }
 }
 
-const simpleMenu = () => (
-  <View>
-    <Text>Please work!</Text>
-  </View>
-);
 
 export default Menu;

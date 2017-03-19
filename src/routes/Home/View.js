@@ -3,10 +3,8 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import { 
   View,
-  ScrollView,
-  Text,
-} from 'react-native';
-import { Actions } from 'react-native-router-flux';
+  ScrollView, Text,
+} from 'react-native'; import { Actions } from 'react-native-router-flux';
 import { 
   Button,
   Card,
@@ -24,16 +22,17 @@ import Menu from '../../components/Menu';
 
 class Home extends React.Component {
 
-  setTodosCalled = false;
+  setTodoListCalled = false;
 
   componentDidMount() {
     this.props.subscribeToNewTodos();
+    this.props.subscribeToNewTodoLists();
   }
 
   componentWillReceiveProps(nextProps){
-    if (!this.setTodosCalled && !nextProps.viewer.loading && this.props.viewer.loading) {
-      this.setTodosCalled = true;
-      this.props.setTodos(nextProps.viewer.viewer.todos);
+    if (!this.setTodoListCalled && !nextProps.viewer.loading && this.props.viewer.loading) {
+      this.setTodoListCalled = true;
+      this.props.setTodoLists(nextProps.viewer.viewer.todoLists);
       this.props.setUser({
         email: nextProps.viewer.viewer.email
       });
@@ -41,16 +40,23 @@ class Home extends React.Component {
   }
 
   render() {
+    let listId = 0;
+    let todos = []
+    if (this.props.todoLists.length) {
+      const currTodoList = this.props.todoLists[this.props.currentList];
+      listId = currTodoList.id;
+      todos = currTodoList.todos;
+    }
     return (
       <View>
-        <TodoForm {...this.props}/>
+        <TodoForm listId={listId} {...this.props}/>
         <Button 
           title='Go to login'
           onPress={() => Actions.login({})}
         />
         <ScrollView>
           { 
-            this.props.todos.map((t, i) => (
+            todos.map((t, i) => (
               <TodoItem 
                 token={this.props.token}
                 key={i}
@@ -69,16 +75,36 @@ const viewerQuery = gql`
 query($token: String!) {
   viewer(token: $token) {
     email
-    todos {
+    todoLists {
       id
-    	text
-      complete
+      name
+      todos {
+        id
+        text
+        complete
+      }
     }
   }
 }
 `;
 
-const subscriptionGraphql = gql`
+const newTodoListSubscription = gql`
+subscription {
+  todoListChanges {
+    op
+    todoList {
+      name
+      todos {
+        id
+        text
+        complete
+      }
+    }
+  }
+}
+`;
+
+const newTodosSubscription = gql`
 subscription {
   todoChanges {
     op
@@ -101,9 +127,21 @@ const getViewer = graphql(viewerQuery, {
   props: props => {
     return {
       viewer: props.viewer,
+      subscribeToNewTodoLists: params => {
+        return props.viewer.subscribeToMore({
+          document: newTodoListSubscription,
+          updateQuery: (prev, { subscriptionData }) => {
+            const { op, todoList } = subscriptionData.data.todoListChanges;
+            if (op == 'created') {
+              props.ownProps.addTodoList(todoList);
+            }
+            return prev;
+          }
+        });
+      },
       subscribeToNewTodos: params => {
         return props.viewer.subscribeToMore({
-          document: subscriptionGraphql,
+          document: newTodosSubscription,
           updateQuery: (prev, { subscriptionData }) => {
             const { op, todo } = subscriptionData.data.todoChanges;
             if (op === 'created') {
