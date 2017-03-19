@@ -60,11 +60,21 @@ const addListIdEpic = (action$, { getState, dispatch }) =>
       }
     })
     
-
+const createTodoListEpic = (action$, { getState, dispatch }) =>
+  action$
+    .ofType('ADD_TODO_LIST')
+    .map(action => {
+      const { todoLists } = getState();
+      return {
+        type: 'CHANGE_LIST',
+        newList: todoLists.length - 1,
+      }
+    });
 
 export default combineEpics(
   saveTokenEpic,
   checkIfSignedIn,
   logoutEpic,
-  addListIdEpic
+  addListIdEpic,
+  createTodoListEpic
 );

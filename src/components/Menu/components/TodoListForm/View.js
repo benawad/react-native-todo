@@ -45,14 +45,17 @@ const submit = ({ name='' }, createTodoList) => {
   }
 }
 
-const TodoListForm = ({ handleSubmit, createTodoList }) => {
+const TodoListForm = ({ handleSubmit, createTodoList, toggleDrawer }) => {
   return (
     <View>
       <FormLabel>Add TodoList</FormLabel>
       <Field name='name' component={textField} />
       <Button 
         title='Create'
-        onPress={handleSubmit(values => submit(values, createTodoList))} />
+    onPress={handleSubmit(values => {
+      submit(values, createTodoList);
+      toggleDrawer();
+    })} />
     </View>
   );
 }

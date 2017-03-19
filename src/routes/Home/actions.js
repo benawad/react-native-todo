@@ -31,3 +31,8 @@ export const addTodoList = (todoList) => ({
   type: 'ADD_TODO_LIST',
   todoList,
 });
+
+export const deleteTodoList = (id) => ({
+  type: 'DELETE_TODO_LIST',
+  id,
+});

@@ -7,6 +7,7 @@ import todos from './todos';
 import user from './user';
 import todoLists from './todoLists';
 import currentList from './currentList';
+import drawerOpen from './drawerOpen';
 
 export const rootReducer = combineReducers({
   form: formReducer,
@@ -16,4 +17,5 @@ export const rootReducer = combineReducers({
   user,
   todoLists,
   currentList,
+  drawerOpen,
 });

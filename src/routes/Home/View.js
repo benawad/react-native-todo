@@ -40,15 +40,19 @@ class Home extends React.Component {
   }
 
   render() {
+    console.log(this.props.currentList);
     let listId = 0;
     let todos = []
+    let name = '';
     if (this.props.todoLists.length) {
       const currTodoList = this.props.todoLists[this.props.currentList];
+      name = currTodoList.name;
       listId = currTodoList.id;
       todos = currTodoList.todos;
     }
     return (
       <View>
+        <Text>{name}</Text>
         <TodoForm listId={listId} {...this.props}/>
         <Button 
           title='Go to login'
@@ -93,6 +97,7 @@ subscription {
   todoListChanges {
     op
     todoList {
+      id
       name
       todos {
         id
@@ -134,6 +139,8 @@ const getViewer = graphql(viewerQuery, {
             const { op, todoList } = subscriptionData.data.todoListChanges;
             if (op == 'created') {
               props.ownProps.addTodoList(todoList);
+            } else if (op == 'deleted') {
+              props.ownProps.deleteTodoList(todoList.id);
             }
             return prev;
           }

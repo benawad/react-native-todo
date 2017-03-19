@@ -6,6 +6,8 @@ import {
 import {
   SideMenu
 } from 'react-native-elements';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import Signup from './Signup';
 import Login from './Login';
@@ -14,23 +16,18 @@ import Loading from './Loading';
 import Menu from '../components/Menu';
 import NavBar from '../components/NavBar';
 
-export default class App extends Component {
+class Routes extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      isOpen: false,
-    };
   }
 
   render() {
     return (
       <SideMenu
        menu={<Menu/>}
-       isOpen={this.state.isOpen} >
-      <NavBar menuButtonClicked={() => {
-        this.setState({ isOpen: !this.state.isOpen });
-      }} />
+       isOpen={this.props.drawerOpen} >
+      <NavBar menuButtonClicked={() => this.props.toggleDrawer()} />
         <Router>
           <Scene key="root">
             <Scene key="loading" component={Loading} title="Loading" initial hideNavBar />
@@ -43,3 +40,13 @@ export default class App extends Component {
     )
   }
 }
+
+const toggleDrawer = () => ({ type: 'TOGGLE_DRAWER' });
+
+const mapStateToProps = (state, ownProps) => ({
+  drawerOpen: state.drawerOpen,
+});
+
+const mapDispatchToProps = dispatch => (bindActionCreators({ toggleDrawer }, dispatch));
+
+export default connect(mapStateToProps, mapDispatchToProps)(Routes);

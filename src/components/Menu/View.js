@@ -1,7 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet,
-  Text,
+  StyleSheet, Text,
   View,
   ScrollView,
 } from 'react-native';
@@ -10,6 +9,9 @@ import {
   ListItem
 } from 'react-native-elements';
 import { Actions } from 'react-native-router-flux';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+
 import TodoListForm from './components/TodoListForm';
 
 class Menu extends React.Component {
@@ -27,7 +29,13 @@ class Menu extends React.Component {
               <ListItem
                 key={i}
                 title={tl.name}
-                onPress={() => this.props.changeList(i)}
+                onPress={() => {
+                  this.props.toggleDrawer();
+                  this.props.changeList(i)
+                }}
+                onLongPress={() => {
+                  this.props.deleteTodoList(tl.id, this.props.token);
+                }}
               />
             ))
           }
@@ -35,6 +43,7 @@ class Menu extends React.Component {
             key={-3}
             title='Logout'
             onPress={() => {
+              this.props.toggleDrawer();
               Actions.login({});
               this.props.logout();
             }}
@@ -43,6 +52,7 @@ class Menu extends React.Component {
             key={-4}
             title='Sign up'
             onPress={() => {
+              this.props.toggleDrawer();
               Actions.signup({});
             }}
           />
@@ -53,5 +63,27 @@ class Menu extends React.Component {
   }
 }
 
+const deleteTodoListMutation  = gql`
+mutation($id: String!, $token: String!) {
+  deleteTodoList(id: $id, token: $token) {
+    id
+  }
+}
+`;
 
-export default Menu;
+
+const deleteTodoList = graphql(deleteTodoListMutation, {
+  props: ({ ownProps, mutate }) => ({
+    deleteTodoList(id, token) {
+      return mutate({
+        variables: {
+          id,
+          token,
+        }
+      });
+    },
+  }),
+});
+
+
+export default deleteTodoList(Menu);

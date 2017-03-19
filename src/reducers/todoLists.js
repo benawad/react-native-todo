@@ -20,6 +20,8 @@ export default (state=[], action) => {
       return action.todoLists;
     case 'ADD_TODO_LIST':
       return [...state, action.todoList];
+    case 'DELETE_TODO_LIST':
+      return state.filter(tl => tl.id !== action.id);
     case 'ADD_TODO':
       return state.map((tl) => tl.id === action.listId ? addTodo(tl, action.todo) : tl);
     case 'DELETE_TODO':
