@@ -17,6 +17,7 @@ import {
 } from 'react-native-elements'
 
 import TodoForm from './components/TodoForm';
+import ShareForm from './components/ShareForm';
 import TodoItem from './components/TodoItem';
 import Menu from '../../components/Menu';
 
@@ -32,7 +33,8 @@ class Home extends React.Component {
   componentWillReceiveProps(nextProps){
     if (!this.setTodoListCalled && !nextProps.viewer.loading && this.props.viewer.loading) {
       this.setTodoListCalled = true;
-      this.props.setTodoLists(nextProps.viewer.viewer.todoLists);
+      const { viewer } = nextProps.viewer;
+      this.props.setTodoLists([...viewer.todoLists, ...viewer.sharedTodoLists]);
       this.props.setUser({
         email: nextProps.viewer.viewer.email
       });
@@ -70,6 +72,7 @@ class Home extends React.Component {
             ))
           }
         </ScrollView>
+        <ShareForm listId={listId} {...this.props}/>
       </View>
     );
   }
@@ -80,6 +83,15 @@ query($token: String!) {
   viewer(token: $token) {
     email
     todoLists {
+      id
+      name
+      todos {
+        id
+        text
+        complete
+      }
+    }
+    sharedTodoLists {
       id
       name
       todos {

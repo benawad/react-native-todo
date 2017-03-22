@@ -28,7 +28,6 @@ const logoutEpic = action$ =>
 
 const checkIfSignedIn = action$ =>
   action$.ofType('CHECK_IF_SIGNED_IN')
-    //.do(action => saveToken(''))
     .mergeMap(action =>
       fromPromise(getToken())
         .map(token => {
